@@ -1,3 +1,30 @@
-extends layout
+doctype html
+html
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport",content="width=device-width,initial-scale=1")
+    meta(name="theme-color",content="#2E2E2E")
+    meta(name="description",content="Drive")
+    meta(name="keywords",content="Drive,Node.JS,HTML,CSS,AngularJS,JavaScript")
+    title= title
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    link(rel="stylesheet",href='/angular-material/angular-material.css')
+    link(rel="stylesheet",href='/bs/css/bootstrap.css')
+    link(rel="stylesheet",href='/angular-loading-bar/src/loading-bar.css')
+    script(src="/angular/angular.js")
+    script(src="/angular-animate/angular-animate.js")
+    script(src="/angular-aria/angular-aria.js")
+    script(src="/angular-material/angular-material.js")
+    script(src="/angular-loading-bar/src/loading-bar.js")
+    script(src="/angular-audio/angular.audio.js")
+    script(src="/cookie/angular-cookies.js")
+    script(src="/upload/angular-file-upload.js")
+    script(src="/context-menu/contextMenu.js")
+    script(src="/javascripts/auth.js")
+    script(src="/javascripts/ui.js")
+    script(src="/javascripts/upload.js")
+    script(src="/jq/jquery.js")
+    script(src="/bs/js/bootstrap.js")
+    script(src="/javascripts/file.js")
 
-block content
+  body(ng-app="authApp",ng-controller="authCtrl")
