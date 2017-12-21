@@ -1,0 +1,82 @@
+//
+   Created by damon on 6/25/16.
+
+extends layout
+
+block content
+    .container(ng-app="adminApp",ng-controller="adminCtrl",ng-init="usersList()")
+        md-button.md-raised.md-warn(ng-click="newUserDia()",layout-lt-md="right") New User
+        md-toolbar.md-theme-light
+            h2.md-toolbar-tools Users
+        md-content
+            md-list
+                md-list-item.md-2-line
+                    md-input-container(flex)
+                        label Search
+                        input.md-input(type="text",ng-model="adminSearchBar")
+                md-list-item.md-2-line(ng-repeat="($index,admin) in admins | filter:adminSearchBar")
+                    .md-list-item-text
+                        h3 {{$index+1}} {{admin.username}}
+                            |(ID: {{admin._id}})
+                        h4 {{admin.name}}
+                        p Admin: {{admin.admin}}
+                    md-button.md-raised.md-warn(ng-click="userData(admin._id)") More
+                    md-divider(ng-if="!$last")
+        div(style="visibility:hidden")
+            #userData.md-dialog-container
+                md-dialog(layout-padding='4px',layout-gt-md="row",layout="center center")
+                    div(layout-gt-md="column",layout="center center")
+                        md-content(layout-padding)
+                            h3 User Data
+                            div(layout-gt-md="row")
+                                |ID: {{userData.id}}
+                            div(layout-gt-md="row")
+                                |Username: {{userData.username}}
+                            div(layout-gt-md="row")
+                                |Email: {{userData.email}}
+                            div(layout-gt-md="row")
+                                |Admin: {{userData.admin}}
+                            div(layout-gt-md="row")
+                                |Create DateTime: {{userData.createDT}}
+                            div(layout-gt-md="row")
+                                |Update DateTime: {{userData.updateDT}}
+        div(style='visibility: hidden')
+            #newUser.md-dialog-container
+                md-dialog(layout-padding='4px',layout-gt-md="row",layout="center center")
+                    div(layout-gt-md="column",layout="center center")
+                        md-content(layout-padding)
+                            h3 New User
+                            form(ng-submit="createUser()",novalidate)
+                                div(layout-gt-sm="row")
+                                    md-input-container.md-block(flex-gt-sm)
+                                        label Username
+                                        input(ng-model="user.username",required)
+                                div(layout-gt-sm="row")
+                                    md-input-container.md-block(flex-gt-sm)
+                                        label Password
+                                        input(type="password",ng-model="user.password",required)
+                                    md-input-container.md-block(flex-gt-sm)
+                                        label Confirm Password
+                                        input(type="password",ng-model="user.conpassword",required)
+                                div(layout-gt-sm="row")
+                                    md-input-container.md-block(flex-gt-sm)
+                                        label Email
+                                        input(type="email",ng-model="user.email",required)
+                                div(layout-gt-sm="row")
+                                    md-input-container.md-block(flex-gt-sm)
+                                        label Name
+                                        input(ng-model="user.name",required)
+                                div(layout-gt-sm="row")
+                                    md-input-container.md-block(flex-gt-sm)
+                                        label Space
+                                        md-select(ng-model="user.space",required)
+                                            md-option(ng-repeat="space in spaces",value="{{space.abbrev}}") {{space.abbrev}}
+                                    md-input-container.md-block(flex-gt-sm)
+                                        label Admin
+                                        md-select(name="user.admin",ng-model="user.admin",required)
+                                            md-option(value="true") True
+                                            md-option(value="false") False
+                                div(layout-gt-sm="row")
+                                    md-button.md-raised.md-warn(type="submit") Create
+                                div(layout-gt-sm="row",ng-model="success",layout="center center") {{success}}
+                                div(layout-gt-sm="row",ng-repeat="error in errors",layout="center center") {{error.message}}

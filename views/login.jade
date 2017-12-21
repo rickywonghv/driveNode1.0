@@ -1,0 +1,45 @@
+doctype html
+html
+    head
+        title Login
+        meta(name="viewport",content="width=device-width,initial-scale=1")
+        meta(name="theme-color",content="#2E2E2E")
+        meta(name="description",content="Drive")
+        meta(name="keywords",content="Drive,Node.JS,HTML,CSS,AngularJS,JavaScript")
+        link(rel='stylesheet', href='/stylesheets/style.css')
+        link(rel='stylesheet', href='/angular-material/angular-material.css')
+        link(rel="stylesheet",href='/angular-loading-bar/src/loading-bar.css')
+        script(src='/angular/angular.js')
+        script(src='/angular-animate/angular-animate.js')
+        script(src='/angular-aria/angular-aria.js')
+        script(src='/angular-material/angular-material.js')
+        script(src="/angular-loading-bar/src/loading-bar.js")
+        script(src="/angular-audio/angular.audio.js")
+        script(src='/cookie/angular-cookies.js')
+        script(src="/upload/angular-file-upload.js")
+        script(src="/context-menu/contextMenu.js")
+        script(src='/javascripts/auth.js')
+        script(src="/javascripts/ui.js")
+        script(src="/javascripts/upload.js")
+        script(src="/javascripts/file.js")
+        script(src="/javascripts/admin.js")
+        script(src="/javascripts/profile.js")
+
+    body(ng-app='authApp')
+        div.md-inline-form(layout='column', ng-cloak,layout-align='center')
+            form(novalidate='', ng-submit='login(credentials)', ng-controller='loginCtrl')
+                md-content(md-theme='docs-dark')
+                    div(layout='column', layout-align='center center')
+                        div
+                            h1 Login
+                        div
+                            md-input-container
+                                label Username
+                                input(ng-model='credentials.username', required='')
+                        div
+                            md-input-container
+                                label Password
+                                input(ng-model='credentials.password', type='password', required='')
+                        div
+                            md-button.md-raised.md-warn(type='submit') Login
+                        div(ng-show='msg') {{msg}}

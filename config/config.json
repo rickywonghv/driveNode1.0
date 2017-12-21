@@ -1,0 +1,9 @@
+{
+  "connections":"127.0.0.1",
+  "dbport":"27017",
+  "dbname":"drive",
+  "storageroot":"files",
+  "encryptfiles":"encrypt",
+  "decryptfiles":"decrypt",
+  "downloadsfiles":"downloads"
+}

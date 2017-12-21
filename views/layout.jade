@@ -1,0 +1,108 @@
+doctype html
+html
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport",content="width=device-width,initial-scale=1")
+    meta(name="theme-color",content="#2E2E2E")
+    meta(name="description",content="Drive")
+    meta(name="keywords",content="Drive,Node.JS,HTML,CSS,AngularJS,JavaScript")
+    title= title
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    link(rel="stylesheet",href='/angular-material/angular-material.css')
+    link(rel="stylesheet",href='/bs/css/bootstrap.css')
+    link(rel="stylesheet",href='/angular-loading-bar/src/loading-bar.css')
+    script(src="/angular/angular.js")
+    script(src="/angular-animate/angular-animate.js")
+    script(src="/angular-aria/angular-aria.js")
+    script(src="/angular-material/angular-material.js")
+    script(src="/angular-loading-bar/src/loading-bar.js")
+    script(src="/angular-audio/angular.audio.js")
+    script(src="/cookie/angular-cookies.js")
+    script(src="/upload/angular-file-upload.js")
+    script(src="/context-menu/contextMenu.js")
+    script(src="/javascripts/auth.js")
+    script(src="/javascripts/ui.js")
+    script(src="/javascripts/upload.js")
+    script(src="/jq/jquery.js")
+    script(src="/bs/js/bootstrap.js")
+    script(src="/javascripts/file.js")
+    script(src="/javascripts/admin.js")
+    script(src="/javascripts/profile.js")
+
+  body(ng-app="authApp",ng-controller="authCtrl")
+    div(ng-app="uiApp")
+      nav.navbar.navbar-inverse
+        .container-fluid
+          .navbar-header
+            button.navbar-toggle(type='button', data-toggle='collapse', data-target='#navbar')
+              span.icon-bar
+              span.icon-bar
+              span.icon-bar
+            a.navbar-brand(href='/') Drive
+          #navbar.collapse.navbar-collapse
+            ul.nav.navbar-nav
+              li.active
+                a(href='/') Home
+              li
+                a(href='/') File
+              li.dropdown(ng-if='isAdmin()')
+                a.dropdown-toggle(data-toggle='dropdown', href='#')
+                  span.glyphicon.glyphicon-user
+                  | Admin
+                  span.caret
+                ul.dropdown-menu
+                  li
+                    a(href='/admin') Manage Admin
+            ul.nav.navbar-nav.navbar-right
+              li.dropdown
+                a.dropdown-toggle(data-toggle='dropdown', href='#')
+                  span.glyphicon.glyphicon-user
+                  {{username}}
+                  span.caret
+                ul.dropdown-menu
+                  li
+                    a(href="",ng-app="profileApp",ng-controller="profileCtrl",ng-click="profile()") Profile
+                  li
+                    a(href="",ng-app="profileApp",ng-controller="profileCtrl",ng-click="showChpwd()") Change Password
+                  li
+                    a(href='#logout',ng-click="logout()") Logout
+
+      div(style='visibility: hidden')
+        #profileDialog.md-dialog-container(ng-app="profileApp",ng-controller="profileCtrl",ng-init="showProfile()")
+          md-dialog(layout-padding='1px',layout="column")
+              div(layout-gt-sm="row")
+                h3 Profile
+              div(layout-gt-sm="row") Username: {{proUser}}
+              div(layout-gt-sm="row") Email: {{proEmail}}
+              div(layout-gt-sm="row") Role: {{proRole}}
+              div(layout-gt-sm="row") Space: {{proSpace}}
+              div(layout-gt-sm="row") Files Size: {{proFilesSize}}
+              div.progress
+                div.progress-bar(role="progressbar",aria-valuenow="{{usedVal}}",aria-valuemin="0",aria-valuemax="100",style="width:{{usedVal}}%")
+                  span.sr-only {{usedVal}}% Used
+              div(layout-gt-sm="row")
+                //md-progress-linear(md-mode="determinate",value="{{determinateValue}}")
+
+      div(style='visibility: hidden')
+        #chpwdDialog.md-dialog-container(ng-app="profileApp",ng-controller="profileCtrl")
+          md-dialog(layout-padding='1px',layout="column")
+            div(layout-gt-sm="row")
+              h3 Change Password
+            form(ng-submit="chpwd()",novalidate)
+              div(layout-gt-sm="row")
+                md-input-container(flex)
+                  label Old Password
+                  input(type="password",ng-model="opwd",required)
+              div(layout-gt-sm="row")
+                md-input-container(flex)
+                  label New Password
+                  input(type="password",ng-model="npwd",required)
+              div(layout-gt-sm="row")
+                md-input-container(flex)
+                  label Confirm Password
+                  input(type="password",ng-model="conpwd",required)
+              div(layout-gt-sm="row",layout="center center")
+                md-button.md-raisd.md-primary(type="submit") Save
+              div(ng-show="chpwdResult") {{chpwdResult}}
+
+    block content

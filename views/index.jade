@@ -1,0 +1,331 @@
+extends layout
+
+block content
+
+  div(ng-app="fileApp",ng-controller="fileCtrl",ng-init="listFile(0,'/')")
+    //Left Dir Bar
+    div.col-md-3()
+      md-content(flex)
+        div(layout-gt-md="row",ng-app="uploadApp",ng-controller="uploadCtrl")
+          //ng-href="/upload/#?dir={{currentDir}}"
+          md-button.md-raised.md-primary(ng-click="uploadDialog(currentDir)")
+            md-icon(md-svg-src="/images/icon/upload.svg",style="color: greenyellow;")
+            |&#32; Upload
+        div()
+          md-button.md-raised.md-primary(ng-click="downloaderDialog(currentDir)") Downloader
+        div(layout-gt-md="row")
+          md-button.md-raised.md-warn(ng-click="newDir(currentDir)") New Directory
+        br
+        div Current Directory:
+          span(ng-if="currentDirName==null") /
+          |{{currentDirName}}
+
+        md-button(ng-click="listFile(0,'/')",ng-if="currentDir!==0") Back
+        md-content()
+          md-list
+            md-list-item.md-1-line(ng-repeat="dir in dirs.arr",ng-model="dir",ng-click="listFile(dir.id,dir.name)",context-menu="dirMenuOptions")
+              span.md-list-item-text()
+                md-icon(md-svg-src="/images/icon/folder.svg",style="color: greenyellow;")
+                span &#32; {{dir.name}}
+              md-divider(ng-show="!$last")
+    div.col-md-9()
+      div(ng-cloak)
+        md-content
+          md-tabs(md-dynamic-height,md-border-bottom)
+            md-tab(label="Files")
+              md-content.md-padding
+
+                //File Action Bar(Top)
+                md-content(ng-disabled="number.length<=0",flex)
+                  button.btn.btn-primary(ng-show="number.length>=0",ng-disabled="number.length<=0",ng-click="resetSec()") Reset
+                  button.btn.btn-success(ng-show="number.length>=0",ng-disabled="number.length<=0",ng-click="selectedItem(selected)") Selected
+                  div(ng-show="number.length>=0") Selected {{number.length}} files
+                  md-input-container.md-block(flex-gt-md)
+                    label Search
+                    input(ng-model="searchInput")
+                  div(ng-show="musicName",ng-model="musicBar")
+                    | {{musicName}}
+                    | {{audio.currentTime | trackTime}}
+                    md-button.md-raised.md-primary(ng-click="audio.play()",volume="0.5",start="0.2") Play
+                    md-button.md-raised.md-primary(ng-click="audio.stop()",ng-model="stopBtn") Stop
+
+                //Files List(Right)
+                md-content(flex)
+                  md-list
+                    md-list-item.md-2-line(ng-repeat="file in files | filter:searchInput",ng-model="files")
+                      md-checkbox(ng-checked="exists(file, selected)",ng-click="toggle(file, selected)",aria-label="Slave input")
+                      .list-group-item.files.md-list-item-text(href='',context-menu="menuOptions")
+                        md-icon(md-svg-src="",aria-label="")
+                        | &#32; {{file.name}}
+                      //md-button.md-raised.md-warn(ng-click="delFile(file.id,file.name,currentDir)") Delete
+                      md-divider(ng-show="!$last")
+            md-tab(label="Trash",ng-click="trash()")
+              md-content.md-padding
+                md-content(flex)
+                  md-list
+                    md-list-item.md-2-line(ng-repeat="trashFile in trashFiles",ng-model="trashFiles")
+                      //md-checkbox(ng-checked="exists(file, selected)",ng-click="toggle(file, selected)")
+                      .list-group-item.files.md-list-item-text(href='')
+                        md-icon(md-svg-src="",aria-label="")
+                        | &#32; {{trashFile.fileMeta.filename}}
+                      md-button.md-raised.md-primary(ng-click="restoreFile(trashFile._id,trashFile.fileMeta.filename)") Restore
+                      md-divider(ng-show="!$last")
+
+    //Create Dir Dialog
+    div(style='visibility: hidden')
+      #newDir.md-dialog-container
+        md-dialog(layout-padding='1px',layout-gt-sm="column",layout="center center")
+          div(layout-gt-sm="column",layout="center center")
+            h3 New Directory
+            md-input-container.md-block(flex-gt-sm)
+              label Directory Name
+              input(ng-model="dirname")
+            md-button.md-raised.md-warn(ng-click="createDir(currentDir)") Create
+
+    //File Rename Dialog
+    div(style='visibility: hidden')
+      #renameFile.md-dialog-container
+        md-dialog(layout-padding='1px',layout-gt-sm="column",layout="center center")
+          div(layout-gt-sm="column",layout="center center")
+            h3 Rename
+            md-input-container.md-block(flex-gt-sm)
+              label Name
+              input(ng-model="fileName",value="fileName")
+            md-button.md-raised.md-primary(ng-click="rename(fileId,fileParent)") Confirm
+            div {{renameRes}}
+
+    //Image Preview Dialog
+    div(style='visibility: hidden')
+      #imgPreview.md-dialog-container
+        md-dialog(layout-padding='1px',layout-gt-sm="column",layout="center center")
+          div(layout-gt-sm="column",layout="center center")
+            img.flex(flex,ng-src="{{imgPreviewSrc}}")
+            div(layout-gt-sm="column") {{imgPreviewName}}
+
+    // File Detail Dialog
+    div(style='visibility: hidden')
+      #fileDetail.md-dialog-container
+        md-dialog(layout-padding='1px',layout="column")
+            div.list-group-item
+                |File Name:
+                |{{DfileName}}
+            div.list-group-item
+                | File Mime Type:
+                | {{DmimeType}}
+            div.list-group-item
+                |File Extension:
+                |{{Dext}}
+            div.list-group-item
+                |File Size:
+                |{{Dsize}}
+            div.list-group-item
+                |File Create Date Time:
+                |{{DcreateDT}}
+            div.list-group-item
+              |Share: {{Dshare}}
+
+
+    div(style='visibility: hidden')
+      #dirRename.md-dialog-container
+        md-dialog(layout-padding='1px',layout="column")
+          form(ng-submit="dirRename(parentDirId,renameDirId)",novalidate)
+            md-input-container(flex)
+              label Directory Name
+              input(ng-model="dirNewName",required)
+            md-button.md-raised.md-primary(type="submit") Save
+          div(ng-show="dirNewName.$error.required") Please Enter name
+          div(ng-model="renameMsg",ng-show="renameMsg") {{renameMsg}}
+
+    //Dir Detail Dialog
+    div(style='visibility: hidden')
+      #dirDetail.md-dialog-container
+        md-dialog(layout-padding='1px',layout="column")
+          div.list-group-item
+            | Directory Name:
+            | {{DDirName}}
+          div.list-group-item
+            | Total Files:
+            | {{DDirTotalFiles}}
+          div.list-group-item
+            | Directory Create Date Time:
+            | {{DDirCreateDT}}
+          div.list-group-item
+            | Share: {{DDirShare}}
+
+    //Upload Dialog
+    div(style='visibility: hidden',ng-app="uploadApp",ng-controller="uploadCtrl")
+      #uploadDia.md-dialog-container
+        md-dialog(layout-padding='1px',layout="column")
+          div#App2(name="formpro.form",nv-file-drop="",uploader="uploader",filters="customFilter")
+            .row
+              .col-md-3.col-sm-12.col-xs-12
+                h3 Select files
+                // Example: nv-file-select="" uploader="{Object}" options="{Object}" filters="{String}"
+                | Multiple
+                input.form-control(type='file', nv-file-select='', uploader='uploader', multiple)
+                input.form-control(type='hidden',ng-model="tokenfield",name="tokenfield")
+              .col-md-9.col-sm-12.col-xs-12(style='margin-bottom: 40px')
+                h3 Upload queue
+                p Queue length: {{ uploader.queue.length }}
+                table.table.col-md-12.col-sm-12.col-xs-12
+                  thead
+                    tr
+                      th(width='50%') Name
+                      th(ng-show='uploader.isHTML5') Size
+                      th(ng-show='uploader.isHTML5') Progress
+                      th Status
+                      th Actions
+                  tbody
+                    tr(ng-repeat='item in uploader.queue')
+                      td
+                        strong {{ item.file.name }}
+                      td(ng-show='uploader.isHTML5', nowrap='') {{ item.file.size/1024/1024|number:2 }} MB
+                      td(ng-show='uploader.isHTML5')
+                        .progress(style='margin-bottom: 0;')
+                          .progress-bar(role='progressbar', ng-style="{ 'width': item.progress + '%' }")
+                      td.text-center
+                        span(ng-show='item.isSuccess')
+                          i.glyphicon.glyphicon-ok
+                        span(ng-show='item.isCancel')
+                          i.glyphicon.glyphicon-ban-circle
+                        span(ng-show='item.isError')
+                          i.glyphicon.glyphicon-remove
+                      td()
+                        button.btn.btn-success.btn-xs(type='button', ng-click='item.upload()', ng-disabled='item.isReady || item.isUploading || item.isSuccess')
+                          span.glyphicon.glyphicon-upload
+                          |  Upload
+                        button.btn.btn-warning.btn-xs(type='button', ng-click='item.cancel()', ng-disabled='!item.isUploading')
+                          span.glyphicon.glyphicon-ban-circle
+                          |  Cancel
+                        button.btn.btn-danger.btn-xs(type='button', ng-click='item.remove()')
+                          span.glyphicon.glyphicon-trash
+                          |  Remove
+                div.col-xs-12
+                  div.col-xs-12
+                    | Queue progress:
+                    .progress(style='')
+                      .progress-bar(role='progressbar', ng-style="{ 'width': uploader.progress + '%' }")
+                  button.btn.btn-success.btn-s(type='button', ng-click='uploader.uploadAll()', ng-disabled='!uploader.getNotUploadedItems().length')
+                    span.glyphicon.glyphicon-upload
+                    |  Upload all
+                  button.btn.btn-warning.btn-s(type='button', ng-click='uploader.cancelAll()', ng-disabled='!uploader.isUploading')
+                    span.glyphicon.glyphicon-ban-circle
+                    |  Cancel all
+                  button.btn.btn-danger.btn-s(type='button', ng-click='uploader.clearQueue()', ng-disabled='!uploader.queue.length')
+                    span.glyphicon.glyphicon-trash
+                    |  Remove all
+
+                div(ng-show="success")
+                  | {{success}}
+                div(ng-show="error") {{error}}
+
+    //Move Dir
+    div(style='visibility: hidden')
+      #dirMove.md-dialog-container
+        md-dialog(layout-padding='1px',layout="column")
+          form(ng-submit="moveFile(moveFileId,moveParDir)")
+            div.list-group-item
+              md-input-container
+                label Directory
+                md-select(ng-model="selectedDir")
+                  md-optgroup(label="Directory")
+                    md-option(ng-value="0") Root
+                    md-option(ng-value="moveDir",ng-repeat="moveDir in movedirs") {{moveDir.name}}
+            div.list-group-item
+              |Move {{moveFileName}}
+              span(ng-if="selectedDir") &#32; to {{selectedDir.name}}
+            div.list-group-item
+              md-button.md-raised.md-primary(type="submit") Move
+
+    //Zip Directory
+    div(style='visibility: hidden')
+      #dirZip.md-dialog-container
+        md-dialog(layout-padding='1px',layout="column")
+          h4(layout-nowrap=true) Zip Directory -- {{zipDirName}}
+          form(ng-submit="zipDirPro(zipDirId)")
+            p Zip Directory will not be save in Drive, it will download the zip file to local and delete it from server, so this action will not use your space in Drive.
+            table.table
+              tr
+                th Directory
+                th Size
+                th Files
+                th Progress
+              tr
+                td {{zipDirName}}
+                td {{zipSize}}
+                td {{zipFiles}}
+                td
+                  md-progress-linear(md-mode="determinate",value="{{vm.determinateValue}}")
+              tr
+                td(colspan="4",align="center")
+                  button.btn.btn-primary(type="submit") Start
+
+    div(style='visibility: hidden')
+      #selectedQ.md-dialog-container
+        md-dialog.container(layout-padding='1px',layout="column")
+         div(layout="row")
+          h4(layout-npwrap="true") Selected items
+         div(layout="row")
+           table.table
+             tr
+              th File Name
+              th(align="center") Action
+             tr(ng-repeat="select in selecteds")
+              td {{select.name}}
+              td
+                button.btn.btn-danger(ng-click="selectedRm(select)") Remove
+                button.btn.btn-success(ng-click="downloadItem(select.id)") Download
+                button.btn.btn-warning(ng-click="MoveFile(select.name,select.id,select.parentDirId)") Move
+                button.btn.btn-primary(ng-click="trashFile(select.id,select.name)") Move to Trash
+                button.btn.btn-info(ng-click="fileDetail(select.id,select.filename,select.createDateTime,select.mimetype,select.ext,select.sizeUnit,select.share)") Detail
+                button.btn.btn-danger(ng-click="delFile(select.id,select.name,select.parentDirId)") Delete
+         div(layout="row center center")
+               button.btn.btn-primary(ng-click="zip(selected)") Zip ({{number.length}})
+               button.btn.btn-danger(ng-click="bulkDel(selected)") Delete ({{number.length}})
+               button.btn.btn-success(ng-click="downloads(selected)") Downloads ({{number.length}})
+         div(layout="row")
+             span You selected {{number.length}} of items.
+
+    div(style='visibility: hidden')
+      #downloaderDialog.md-dialog-container
+        md-dialog.container(layout-padding='1px',layout="column")
+          div(layout="row")
+            h4 Downloader
+            |{{connectionErr}}
+          div(layout="row")
+           md-input-container(layout="row")
+            label Url (with http or https)
+            input(type="url",ng-model="urlInput",ng-required="true",required)
+           md-button.md-raised.md-primary(ng-click="downloadUrlAdd()") Add
+          div(layout="row")
+            table.table
+              tr
+                th Url
+                th Progress
+              tr(ng-repeat="downloadUrl in downloaderQ")
+                td {{downloadUrl.url}}
+                td {{downloadUrl.progress}}
+                td
+                  button.btn.btn-danger(ng-click="removeUrl(downloadUrl)") Remove
+                  button.btn.btn-success(ng-click="downloaderDl(downloadUrl.url)") Download
+
+    div(style='visibility: hidden')
+      #fileSharePublic.md-dialog-container
+        md-dialog(layout-padding='1px',layout="column")
+          div(ng-if="shareBoolean")
+            img(src="/api/qr/{{shareId}}")
+          div(layout="row")
+            |Share {{shareName}}
+          div(layout="row")
+            |Now status: {{shareBoolean}}
+          div(layout="row")
+            md-switch(ng-model="shareBoolean",aria-label="Share")
+          div()
+            p This link will expire in 5 hours, reload page to get another link.
+            a(href="{{sharePubUrl}}") Share Link
+          div(layout="row")
+            md-button.md-raisd.md-primary(ng-model="saveShare",ng-click="shareFile(shareId)") Save
+
+    div(style='visibility: hidden')
+      #filePdf.md-dialog-container
+        md-dialog(layout-padding='1px',layout="column")
