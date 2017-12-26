@@ -4,13 +4,11 @@ app.controller('initCtrl',function($scope,$window,$interval,cfpLoadingBar,initSe
     var password=$scope.init.password;
     var conpassword=$scope.init.confirmPassword;
     initService.initial(password,conpassword,function(data){
-      //console.log(data);
-
+      
     });
   };
 });
 app.factory('initService',function($http,$window,$httpParamSerializer){
-  // /192.168.1.105:3000/init
   var init={};
   init.initial=function(password,conpassword,next){
     var data=$httpParamSerializer({password:password,conpassword:conpassword});

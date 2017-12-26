@@ -14,19 +14,19 @@ router.get('/view', function(req, res, next) {
 });
 
 router.get('/login',function(req,res,next){
-  res.render("login",{title:"Drive"});
+  Init.CkInstall(function(data){
+    if(data){
+      res.render("login",{title:"Drive"});
+    }else{
+      res.redirect('/installation');
+    }
+  })
 });
 
 router.post('/init',function(req,res,next){
-  /*
-  Init.Init(function(data){
-    res.json(data);
-  })
-  */
   Init.CreateAdmin(req.body.password,req.body.conpassword,function(data){
     res.json(data);
   })
-
 });
 
 function ckTk(req,res,jade,title){
