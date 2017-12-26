@@ -1,0 +1,64 @@
+doctype html
+html
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport",content="width=device-width,initial-scale=1")
+    meta(name="theme-color",content="#2E2E2E")
+    meta(name="description",content="Drive")
+    meta(name="keywords",content="Drive,Node.JS,HTML,CSS,AngularJS,JavaScript")
+    title= "driveNode Installation"
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    link(rel="stylesheet",href='/angular-material/angular-material.css')
+    link(rel="stylesheet",href='/bs/css/bootstrap.css')
+    link(rel="stylesheet",href='/angular-loading-bar/src/loading-bar.css')
+    script(src="/angular/angular.js")
+    script(src="/angular-animate/angular-animate.js")
+    script(src="/angular-aria/angular-aria.js")
+    script(src="/angular-material/angular-material.js")
+    script(src="/angular-loading-bar/src/loading-bar.js")
+    script(src="/angular-audio/angular.audio.js")
+    script(src="/cookie/angular-cookies.js")
+    script(src="/upload/angular-file-upload.js")
+    script(src="/context-menu/contextMenu.js")
+    script(src="/javascripts/ui.js")
+    script(src="/javascripts/upload.js")
+    script(src="/jq/jquery.js")
+    script(src="/bs/js/bootstrap.js")
+    script(src="/javascripts/installation.js")
+    
+  body(ng-app="initApp")
+    div(ng-app="uiApp")
+      nav.navbar.navbar-inverse
+        .container-fluid
+          .navbar-header
+            button.navbar-toggle(type='button', data-toggle='collapse', data-target='#navbar')
+              span.icon-bar
+              span.icon-bar
+              span.icon-bar
+            a.navbar-brand(href='/') Drive
+          #navbar.collapse.navbar-collapse
+            ul.nav.navbar-nav
+              li.active
+                a(href='/installation') Installation
+              
+            ul.nav.navbar-nav.navbar-right
+              
+    div(ng-controller="initCtrl",class="container")
+      h1(class="head") driveNode Installation
+      mat-nav-list
+        form(ng-submit="initial()",novalidate)
+          span To create admin user password
+          div(layout-gt-sm="row")
+            span Username: admin
+          div(layout-gt-sm="row")
+            md-input-container.md-block(flex-gt-md)
+                label Password
+                input(ng-model="init.password",type="password",required)
+          div(layout-gt-sm="row")
+            md-input-container.md-block(flex-gt-md)
+                label Confirm Password
+                input(ng-model="init.confirmPassword",type="password",required)
+          div(layout-gt-sm="row")
+            md-button.md-raised.md-warn(type="submit") Finish
+          div(ng-model="init.msg")
+        

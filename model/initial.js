@@ -5,6 +5,7 @@ var DB=require("./db.js");
 var async=require("async");
 var bc=require("bcrypt-nodejs");
 var dt=require("node-datetime");
+var auth=require("../model/auth.js");
 
 var init=function(next){
     async.parallel([
@@ -25,9 +26,22 @@ var init=function(next){
         console.log(result);
         next("result");
     })
-
-
 };
+
+var createAdmin=function(password,conpassword,next){
+  var errArray=[];
+  if(password&&conpassword){
+    if(password.length>0&&conpassword.length>0){
+      auth.InitialAddAdmin(password,conpassword,function(data){
+        next(data);
+      })
+    }
+  }else{
+    errArray.push({message:"Miss password or confirm password"});
+    next({success:false,error:errArray,status:401});
+  }
+
+}
 
 var ckInstall=function(next){
   DB.FindAll({username:"admin"},"user",function(data){
@@ -41,3 +55,4 @@ var ckInstall=function(next){
 
 module.exports.Init=init;
 module.exports.CkInstall=ckInstall;
+module.exports.CreateAdmin=createAdmin;

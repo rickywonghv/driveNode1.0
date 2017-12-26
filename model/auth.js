@@ -83,6 +83,44 @@ var AddUser=function(query,next){
     });
 };
 
+var InitialAddAdmin=function(password,conpassword,next){
+  if(password!=conpassword){
+    next({success:false,error:"Password does not match!",status:401});
+  }else{
+    //Add User
+    var hash=bc.hashSync(password, bc.genSaltSync());
+    var DT=datatime.create().now();
+    var json={username:"admin",password:hash,email:"admin@example.com",name:"Administrator",admin:true,createDT:DT,updateDT:DT,space:0};
+    DB.Add(json,"user",function (data) {
+        if(data.success){
+            next({success:true,data:"User Added",status:201});
+        }else{
+            if(data.error.errors){
+                var errArray=[];
+                if(data.error.errors.username){
+                    errArray.push({message:data.error.errors.username.message});
+                }
+                if(data.error.errors.password){
+                    errArray.push({message:data.error.errors.password.message});
+                }
+                if(data.error.errors.email){
+                    errArray.push({message:data.error.errors.email.message});
+                }
+                if(data.error.errors.name){
+                    errArray.push({message:data.error.errors.name.message});
+                }
+                if(data.error.errors.admin){
+                    errArray.push({message:data.error.errors.admin.message});
+                }
+                next({success:false,error:errArray,status:400});
+            }else{
+                next({success:false,error:data.error,status:400});
+            }
+        }
+    });
+  }
+};
+
 var LoginUser=function(query,next){
     async.waterfall([
         function(callback){
@@ -339,3 +377,4 @@ module.exports.UserChpwd=UserChpwd;
 module.exports.RenewToken=RenewToken;
 module.exports.genShareTk=genShareTk;
 module.exports.ckShareToken=ckShareToken;
+module.exports.InitialAddAdmin=InitialAddAdmin;

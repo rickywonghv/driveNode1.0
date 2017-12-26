@@ -15,6 +15,7 @@ var routes = require('./routes/index');
 var api=require('./routes/api');
 var admin=require('./routes/admin');
 var adminapi=require('./routes/adminapi');
+var installation=require('./routes/installation');
 
 var dirck=function(path,dirname){
     if(!fs.existsSync(path+dirname)){
@@ -64,6 +65,7 @@ app.use('/', routes);
 app.use('/api', api);
 app.use('/admin',admin);
 app.use('/admin/api',adminapi);
+app.use('/installation',installation);
 
 
 // catch 404 and forward to error handler
