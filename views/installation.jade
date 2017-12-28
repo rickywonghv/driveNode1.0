@@ -44,21 +44,26 @@ html
             ul.nav.navbar-nav.navbar-right
               
     div(ng-controller="initCtrl",class="container")
-      h1(class="head") driveNode Installation
-      mat-nav-list
-        form(ng-submit="initial()",novalidate)
-          span To create admin user password
-          div(layout-gt-sm="row")
-            span Username: admin
-          div(layout-gt-sm="row")
-            md-input-container.md-block(flex-gt-md)
-                label Password
-                input(ng-model="init.password",type="password",required)
-          div(layout-gt-sm="row")
-            md-input-container.md-block(flex-gt-md)
-                label Confirm Password
-                input(ng-model="init.confirmPassword",type="password",required)
-          div(layout-gt-sm="row")
-            md-button.md-raised.md-warn(type="submit") Finish
-          div(ng-model="init.msg")
+      md-card(md-theme="{{ showDarkTheme ? 'dark-grey' : 'default' }}", md-theme-watch='',flex-md)
+        md-card-title
+          md-card-title-text
+            span.md-headline driveNode Installation
+            span.md-subhead Create admin user password
+            form(ng-submit="initial()",novalidate)
+              div
+                span Username: admin
+              div(layout-lg="row")
+                md-input-container.md-block(flex-gt-md)
+                    label Password
+                    input(ng-model="init.password",type="password",required)
+              div(layout-lg="row")
+                md-input-container.md-block(flex-gt-md)
+                    label Confirm Password
+                    input(ng-model="init.confirmPassword",type="password",required)
+              div(ng-model="msg"){{msg}}
+              
+              md-button.md-raised.md-warn(type="submit") Finish
+        md-card-actions(layout='row', layout-align='end center')  
+          md-button.md-raised.md-success(type="button",ng-model="backBtn",ng-disabled="backBtnSuccess",ng-click="backDrive()") Go to drive
+        
         
