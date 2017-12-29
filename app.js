@@ -17,21 +17,18 @@ var admin=require('./routes/admin');
 var adminapi=require('./routes/adminapi');
 var installation=require('./routes/installation');
 
-var dirck=function(path,dirname){
-    if(!fs.existsSync(path+dirname)){
-      fs.mkdirSync(path+dirname);
-    }
-};
+var install=require('./model/initial.js');
+
 require("./db");
 
-dirck("./","files");
-dirck("./files/","encrypt");
-dirck("./files/","decrypt");
-dirck("./files/","downloads");
-dirck("./files/","qr");
-dirck("./files/","zip");
-dirck("./files/zip/","decrypt");
-dirck("./files/zip/","encrypt");
+install.DirCheck("./","files");
+install.DirCheck("./files/","encrypt");
+install.DirCheck("./files/","decrypt");
+install.DirCheck("./files/","downloads");
+install.DirCheck("./files/","qr");
+install.DirCheck("./files/","zip");
+install.DirCheck("./files/zip/","decrypt");
+install.DirCheck("./files/zip/","encrypt");
 
 var app = express();
 // view engine setup

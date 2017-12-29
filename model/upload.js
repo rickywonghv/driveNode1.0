@@ -5,6 +5,7 @@ var express = require('express');
 var app = express();
 var multer  = require('multer');
 var upload = multer({dest:"upload/",inMemory: true}).single('file');
+var keyUpload = multer({dest:"key/",inMemory: true}).single('file');
 var Auth=require("../model/auth.js");
 var fs=require("fs");
 var DB=require("../model/db.js");
@@ -13,6 +14,7 @@ var uuid = require('uuid');
 var async=require("async");
 var datetime=require("node-datetime");
 var FileNameDet=require("./file.js").FileNameDet;
+var Initial=require("./initial.js");
 
 var FileUpload=function(req, res,next){
     upload(req,res, function (err) {
@@ -63,6 +65,29 @@ var FileUpload=function(req, res,next){
     });
 };
 
+var KeyUpload=function(req, res,next){
+    if(fs.existsSync('../key/private.key')&&fs.existsSync('../key/public.key')&&fs.existsSync('../key/sharePrivate.key')&&fs.existsSync('../key/sharePublic.key')){
+      next({success:false,error:"Key exist already",status:400});
+    }else{
+
+      keyUpload(req,res, function (err) {
+          if (err) {
+              next({success:false,error:err,status:400});
+          }else{
+            console.log(req.file.originalname);
+              if(req.file.originalname!="private.key"&&req.file.originalname!="public.key"&&req.file.originalname!="sharePrivate.key"&&req.file.originalname!="sharePublic.key"){
+                fs.unlinkSync(req.file.path);
+                next({success:false,error:"Invalid file name",status:400});
+              }else{
+                fs.renameSync("./key/"+req.file.filename,"./key/"+req.file.originalname);
+                next({success:true,msg:"Upload Success",status:201});
+              }
+          }
+      });
+    }
+
+};
+
 var ckUserSpace=function(token,fileSize,next){
     Auth.ckTk(token,function(data){
         if(data.success){
@@ -95,3 +120,4 @@ var ckUserSpace=function(token,fileSize,next){
 
 module.exports.FileUpload=FileUpload;
 module.exports.UserSpace=ckUserSpace;
+module.exports.KeyUpload=KeyUpload;

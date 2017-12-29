@@ -3,6 +3,7 @@ var router = express.Router();
 var path=require("path");
 var Auth=require("../model/auth.js");
 var Init=require("../model/initial.js");
+var File=require("../model/upload.js"); // File Upload
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -10,8 +11,14 @@ router.get('/', function(req, res, next) {
     if(data){
       res.redirect("/");
     }else{
-      res.render("installation",{title:"Installation"});
+      res.render("setPassword",{title:"Installation"});
     }
+  })
+});
+
+router.post('/keyupload',function(req,res,next){
+  File.KeyUpload(req,res,function(data){
+    res.status(data.status).json(data);
   })
 });
 

@@ -9,11 +9,25 @@ var jwt=require("jsonwebtoken");
 var DB=require("./db.js");
 var check = require('check-types');
 var bc=require("bcrypt-nodejs");
-var priKey = fs.readFileSync('./key/private.key');
-var pubKey=fs.readFileSync('./key/public.key');
-var sharePri=fs.readFileSync('./key/sharePrivate.key');
-var sharePub=fs.readFileSync('./key/sharePublic.key');
+var priKey = "";
+var pubKey="";
+var sharePri="";
+var sharePub="";
 var async=require("async");
+
+if(fs.existsSync('./key/private.key')){
+  priKey = fs.readFileSync('./key/private.key');
+}
+
+if(fs.existsSync('./key/public.key')){
+  pubKey=fs.readFileSync('./key/public.key');
+}
+if(fs.existsSync('./key/sharePrivate.key')){
+  sharePri=fs.readFileSync('./key/sharePrivate.key');
+}
+if(fs.existsSync('./key/sharePublic.key')){
+  sharePub=fs.readFileSync('./key/sharePublic.key');
+}
 
 var AddUser=function(query,next){
     async.waterfall([

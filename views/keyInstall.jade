@@ -1,0 +1,14 @@
+extends installation
+block content
+  md-card(md-theme="{{ showDarkTheme ? 'dark-grey' : 'default' }}", md-theme-watch='',flex-md)
+    md-card-title
+      md-card-title-text
+        span.md-headline driveNode Installation
+        span.md-subhead Please upload key pairs to continous
+        form(ng-submit="",novalidate)
+
+          md-button.md-raised.md-warn(type="submit") Next
+          div(ng-model="msg"){{msg}}
+    md-card-actions(layout='row', layout-align='end center')  
+      md-button.md-raised.md-success(type="button",ng-model="backBtn",ng-disabled="backBtnSuccess",ng-click="backDrive()") Go to drive
+    

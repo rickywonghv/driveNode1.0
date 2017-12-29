@@ -3,6 +3,7 @@
  */
 var DB=require("./db.js");
 var async=require("async");
+var fs=require("fs");
 var bc=require("bcrypt-nodejs");
 var dt=require("node-datetime");
 var auth=require("../model/auth.js");
@@ -53,6 +54,22 @@ var ckInstall=function(next){
   })
 };
 
+var dirck=function(path,dirname){
+    if(!fs.existsSync(path+dirname)){
+      fs.mkdirSync(path+dirname);
+    }
+};
+
+var keyck=function(next){
+  dirck('./','key');
+  if(fs.existsSync('./key/private.key')&&fs.existsSync('./key/public.key')&&fs.existsSync('./key/sharePrivate.key')&&fs.existsSync('./key/sharePublic.key')){
+    next(true);
+  }else{
+    next(false);
+  }
+}
+
 module.exports.Init=init;
 module.exports.CkInstall=ckInstall;
 module.exports.CreateAdmin=createAdmin;
+module.exports.DirCheck=dirck;
