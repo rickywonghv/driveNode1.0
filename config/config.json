@@ -5,5 +5,10 @@
   "storageroot":"files",
   "encryptfiles":"encrypt",
   "decryptfiles":"decrypt",
-  "downloadsfiles":"downloads"
+  "downloadsfiles":"downloads",
+  "keyPath":"key",
+  "private":"private.key",
+  "public": "public.key",
+  "sharePrivate": "sharePrivate.key",
+  "sharePublic": "sharePublic.key"
 }

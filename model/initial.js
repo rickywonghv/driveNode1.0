@@ -4,9 +4,14 @@
 var DB=require("./db.js");
 var async=require("async");
 var fs=require("fs");
+var path = require("path");
 var bc=require("bcrypt-nodejs");
 var dt=require("node-datetime");
 var auth=require("../model/auth.js");
+var publickey = path.resolve("./key/public.key");
+var privatekey = path.resolve("./key/private.key");
+var shareprivatekey = path.resolve("./key/sharePrivate.key");
+var sharepublickey = path.resolve("./key/sharePublic.key");
 
 var init=function(next){
     async.parallel([
@@ -62,7 +67,7 @@ var dirck=function(path,dirname){
 
 var keyck=function(next){
   dirck('./','key');
-  if(fs.existsSync('./key/private.key')&&fs.existsSync('./key/public.key')&&fs.existsSync('./key/sharePrivate.key')&&fs.existsSync('./key/sharePublic.key')){
+  if (fs.existsSync(publickey) && fs.existsSync(privatekey) && fs.existsSync(shareprivatekey) && fs.existsSync(sharepublickey)){
     next(true);
   }else{
     next(false);
@@ -73,3 +78,7 @@ module.exports.Init=init;
 module.exports.CkInstall=ckInstall;
 module.exports.CreateAdmin=createAdmin;
 module.exports.DirCheck=dirck;
+module.exports.publicKey = publickey;
+module.exports.privateKey = privatekey;
+module.exports.sharePublicKey = sharepublickey;
+module.exports.sharePrivateKey = shareprivatekey;

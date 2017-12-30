@@ -11,7 +11,7 @@ router.get('/', function(req, res, next) {
     if(data){
       res.redirect("/");
     }else{
-      res.render("setPassword",{title:"Installation"});
+      res.render("keyInstall",{title:"Installation"});
     }
   })
 });
