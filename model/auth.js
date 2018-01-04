@@ -7,6 +7,7 @@ var datatime=require("node-datetime");
 var fs=require("fs");
 var jwt=require("jsonwebtoken");
 var DB=require("./db.js");
+var Initial = require("../model/initial.js");
 var check = require('check-types');
 var bc=require("bcrypt-nodejs");
 var priKey = "";
@@ -295,6 +296,30 @@ var RenewToken=function(token,next){
     })
 };
 
+var ckAuthKey = function (next) {
+    genTk({ test: true, issueBy: "Installation" }, function (data) {
+        if (data) {
+            if (data.success && data.token) {
+                ckTk(data.token, function (callbackData) {
+                    if (callbackData.success) {
+                        console.log("success");
+                        next(true);
+                    } else {
+                        console.log("fail1");
+                        next(false);
+                    }
+                });
+            } else {
+                console.log("fail2");
+                next(false);
+            }
+        } else {
+            console.log("fail3");
+            next(false);
+        }
+    });
+};
+
 function genShareTk(exp,id,type,next){
     async.waterfall([
         function(cb){
@@ -392,3 +417,4 @@ module.exports.RenewToken=RenewToken;
 module.exports.genShareTk=genShareTk;
 module.exports.ckShareToken=ckShareToken;
 module.exports.InitialAddAdmin=InitialAddAdmin;
+module.exports.CkAuthKey = ckAuthKey;

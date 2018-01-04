@@ -7,13 +7,20 @@ var File=require("../model/upload.js"); // File Upload
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  Init.CkInstall(function(data){
-    if(data){
-      res.redirect("/");
+  Init.CkKey(function(re){
+    if(re){
+      Init.CkInstall(function (data) {
+        if (data) {
+          res.redirect("/");
+        } else {
+          res.render("setPassword", { title: "Installation" });
+        }
+      })
     }else{
-      res.render("keyInstall",{title:"Installation"});
+      res.render("keyInstall", { title: "Installation" });
     }
   })
+  
 });
 
 router.post('/keyupload',function(req,res,next){

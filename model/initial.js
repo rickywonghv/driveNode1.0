@@ -59,6 +59,14 @@ var ckInstall=function(next){
   })
 };
 
+var ckKey=function(next){
+  if (fs.existsSync('./key/private.key') && fs.existsSync('./key/public.key') && fs.existsSync('./key/sharePrivate.key') && fs.existsSync('./key/sharePublic.key')) {
+    next(true);
+  } else {
+    next(false);
+  }
+};
+
 var dirck=function(path,dirname){
     if(!fs.existsSync(path+dirname)){
       fs.mkdirSync(path+dirname);
@@ -72,7 +80,7 @@ var keyck=function(next){
   }else{
     next(false);
   }
-}
+};
 
 module.exports.Init=init;
 module.exports.CkInstall=ckInstall;
@@ -82,3 +90,4 @@ module.exports.publicKey = publickey;
 module.exports.privateKey = privatekey;
 module.exports.sharePublicKey = sharepublickey;
 module.exports.sharePrivateKey = shareprivatekey;
+module.exports.CkKey = ckKey;

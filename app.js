@@ -21,6 +21,7 @@ var install=require('./model/initial.js');
 
 require("./db");
 
+
 install.DirCheck("./","files");
 install.DirCheck("./files/","encrypt");
 install.DirCheck("./files/","decrypt");

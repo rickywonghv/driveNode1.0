@@ -80,7 +80,14 @@ var KeyUpload=function(req, res,next){
                 next({success:false,error:"Invalid file name",status:400});
               }else{
                 fs.renameSync("./key/"+req.file.filename,"./key/"+req.file.originalname);
-                next({success:true,msg:"Upload Success",status:201});
+                Auth.CkAuthKey(function(data){
+                    if(data){
+                        next({ success: true, msg: "Upload Success", status: 201 });
+                    }else{
+                        next({ success: false, msg: "Invalid Key Pairs", status: 401 });
+                    }
+                })
+                
               }
           }
       });
